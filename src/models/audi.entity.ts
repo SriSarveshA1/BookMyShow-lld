@@ -10,17 +10,23 @@ export class AudiEntity extends BaseModel {
   name: string;
 
   @Column()
-  capacity: string;
+  capacity: number;
 
   // 1 theatre can have multiple audies but 1 audi belongs to 1 theatre
-  @ManyToOne(() => TheatreEntity, (theatreEntity) => theatreEntity.audies)
-  theatre: TheatreEntity;
+  @ManyToOne(() => TheatreEntity, (theatreEntity) => theatreEntity.audies, {
+    nullable: true,
+  })
+  theatre?: TheatreEntity;
 
   // 1 audi can have many seats
-  @OneToMany(() => SeatEntity, (seatEntity) => seatEntity.audi)
-  seats: SeatEntity[];
+  @OneToMany(() => SeatEntity, (seatEntity) => seatEntity.audi, {
+    nullable: true,
+  })
+  seats?: SeatEntity[];
 
   // 1 audi can have many shows
-  @OneToMany(() => ShowEntity, (showEntity) => showEntity.audi)
-  shows: ShowEntity[];
+  @OneToMany(() => ShowEntity, (showEntity) => showEntity.audi, {
+    nullable: true,
+  })
+  shows?: ShowEntity[];
 }
