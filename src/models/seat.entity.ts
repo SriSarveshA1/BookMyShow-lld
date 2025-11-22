@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseModel } from './baseModel';
 import { AudiEntity } from './audi.entity';
-import { SeatType } from 'src/enums/common.enums';
+import { SeatType } from '../enums/common.enums';
 
 @Entity({ name: 'seats' })
 export class SeatEntity extends BaseModel {
