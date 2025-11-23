@@ -27,10 +27,7 @@ export class BookingRepository implements IBookingRepository {
       console.log('ticket about to be inserted = ', ticket);
 
       await queryRunner.manager.save(ticket);
-      //   await queryRunner.manager.query(
-      //     `INSERT INTO tickets(id,createdAt,updatedAt,userId,showId) VALUES (?,?,?,?,?)`,
-      //     [ticket.id, ticket.createdAt, ticket.updatedAt, userId, ticket.show.id],
-      //   );
+
       await queryRunner.manager.query(
         `UPDATE showSeats set ticketId=? where showId=? and seatId IN (${placeholders})`,
         [ticket.id, showId, ...seatIds],

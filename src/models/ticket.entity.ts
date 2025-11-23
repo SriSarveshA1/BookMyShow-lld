@@ -8,16 +8,15 @@ import { ShowSeatEntity } from './showSeat.entity';
 export class TicketEntity extends BaseModel {
   // we will have user entity telling which user the ticket is booked for.
   // 1 user can have many tickets,but one ticket belongs to 1 user only
+  private _user: UserEntity;
   @ManyToOne(() => UserEntity, (userEntity) => userEntity.tickets)
   @JoinColumn({ name: 'userId' })
-  user: UserEntity;
-  // private _user: UserEntity;
-  // public get user(): UserEntity {
-  //   return this._user;
-  // }
-  // public set user(value: UserEntity) {
-  //   this._user = value;
-  // }
+  public get user(): UserEntity {
+    return this._user;
+  }
+  public set user(value: UserEntity) {
+    this._user = value;
+  }
 
   // A ticket will be part of a single show, but a single show can have many tickets.
   private _show: ShowEntity;

@@ -85,12 +85,17 @@ export class RedisBasedBookingService implements BookingService {
       await this.showSeatRepository.findAllByShowIdAndSeatIds(showId, seatIds);
 
     for (const showSeat of showSeats) {
-      if (!seatsLockedForUser.includes(`SHOW_SEAT:${showSeat.id}`)) {
+      if (
+        !seatsLockedForUser.includes(`SHOW_SEAT:${showSeat.id}`) ||
+        showSeat.showSeatStatus != ShowSeatStatus.OPEN
+      ) {
         // If the given seat is not part of the locked seats we can't book the ticket with that seat as part of the input.
         // we throw error.
 
         // Todo: we should be using a custom error class here.
-        throw new Error('Seat not locked for user, cannot book ticket');
+        throw new Error(
+          'Seat not locked for user, or its not in open state, cannot book ticket',
+        );
       }
     }
 
@@ -104,15 +109,8 @@ export class RedisBasedBookingService implements BookingService {
     ticketEntity.show = showEntity;
     ticketEntity.user = userEntity;
     ticketEntity.showSeat = showSeats;
+    console.log('ticketEntity.user after assignment = ', ticketEntity.user);
 
-    // await this.ticketRepository.createTicket(ticketEntity);
-
-    // const updatedShowEntities =
-    //   await this.showSeatRepository.bulkUpdateShowSeatsWithTicket(
-    //     showId,
-    //     seatIds,
-    //     ticketEntity.id,
-    //   );
     return await this.bookingRepository.bookTicket(
       ticketEntity,
       userId,
