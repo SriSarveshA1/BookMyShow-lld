@@ -1,16 +1,24 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
-export class CreateAudiRequestDTO {
+export class CreateBookingRequestDTO {
+  // we will have showId, seatIds, userId and need to have class validator decorators.
   @IsNotEmpty()
-  @IsString()
-  name: string;
+  showId: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  capacity: number;
+  seatIds: string[];
+
+  @IsNotEmpty()
+  userId: string;
 }
 
-export class CreateCityRequestDto {
-  @IsString()
-  name: string;
+export class CreateLookSeatsRequestDTO {
+  @IsNotEmpty()
+  showId: string;
+
+  @IsNotEmpty()
+  seatIds: string[];
+
+  @IsNotEmpty()
+  userId: string;
 }

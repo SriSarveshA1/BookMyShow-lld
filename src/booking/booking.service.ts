@@ -10,6 +10,7 @@ import { IsNumber } from 'class-validator';
 import { ShowRepository } from 'src/repository/repositories/mysql/show.repository';
 import { UserRepository } from 'src/repository/repositories/mysql/user.repository';
 import { TicketRepository } from 'src/repository/repositories/mysql/ticket.repository';
+import { BookingRepository } from 'src/repository/repositories/mysql/booking.repository';
 
 @Injectable()
 export class RedisBasedBookingService implements BookingService {
@@ -20,6 +21,7 @@ export class RedisBasedBookingService implements BookingService {
     private showRepository: ShowRepository,
     private userRepository: UserRepository,
     private ticketRepository: TicketRepository,
+    private bookingRepository: BookingRepository,
   ) {}
 
   async blockSeats(
@@ -56,6 +58,8 @@ export class RedisBasedBookingService implements BookingService {
       `USER_SHOW_ID:${userId}`,
     );
 
+    console.log('luaScriptExpression = ', luaScriptExpression);
+
     if (IsNumber(luaScriptExpression) && luaScriptExpression == 1) {
       return true;
     }
@@ -84,6 +88,9 @@ export class RedisBasedBookingService implements BookingService {
       if (!seatsLockedForUser.includes(`SHOW_SEAT:${showSeat.id}`)) {
         // If the given seat is not part of the locked seats we can't book the ticket with that seat as part of the input.
         // we throw error.
+
+        // Todo: we should be using a custom error class here.
+        throw new Error('Seat not locked for user, cannot book ticket');
       }
     }
 
@@ -93,7 +100,24 @@ export class RedisBasedBookingService implements BookingService {
 
     // We can use builder pattern here
     const ticketEntity = new TicketEntity();
+    // These will internally call the getters and setters.
+    ticketEntity.show = showEntity;
+    ticketEntity.user = userEntity;
+    ticketEntity.showSeat = showSeats;
 
-    return ticketEntity;
+    // await this.ticketRepository.createTicket(ticketEntity);
+
+    // const updatedShowEntities =
+    //   await this.showSeatRepository.bulkUpdateShowSeatsWithTicket(
+    //     showId,
+    //     seatIds,
+    //     ticketEntity.id,
+    //   );
+    return await this.bookingRepository.bookTicket(
+      ticketEntity,
+      userId,
+      showId,
+      seatIds,
+    );
   }
 }

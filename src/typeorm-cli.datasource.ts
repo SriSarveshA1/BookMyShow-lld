@@ -7,9 +7,9 @@ export const AppDataSource = new DataSource({
   username: 'root',
   password: 'root',
   database: 'bms5',
-  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  entities: [__dirname + '/models/*.entity{.ts,.js}'],
   synchronize: false,
-  migrations: [__dirname + '/../migrations/*.{ts,js}'],
+  migrations: [__dirname + '/migrations/*.{ts,js}'],
 });
 
 export const Database = [

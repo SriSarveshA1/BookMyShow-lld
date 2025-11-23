@@ -23,5 +23,7 @@ for _, key in ipairs(KEYS) do
     redis.call("SADD", setKey, key)
 end
 
+redis.call('EXPIRE', setKey, ttl)
+
 return 1
 `;
